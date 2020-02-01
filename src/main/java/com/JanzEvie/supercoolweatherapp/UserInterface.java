@@ -216,7 +216,7 @@ public class UserInterface extends JPanel
     static public void setUpFrame()
     {
         frame.setContentPane( mainPanel );
-        frame.setSize( 400, 400 );
+        frame.setSize( 1280, 1024 );
         frame.setTitle( "Super Cool Weather App" );
         frame.getContentPane().setLayout( null );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
