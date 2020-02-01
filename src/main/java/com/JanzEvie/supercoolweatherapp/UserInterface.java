@@ -38,7 +38,7 @@ public class UserInterface extends JPanel
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
         //Create a set up location text field
-        JTextField address = new JTextField( "Search location, zip..." , 50 );
+        JTextField address = new JTextField( "Search address, location, zip..." , 50 );
         address.setBounds( 400, 100, 500, 50 );
         mainPanel.add( address );
 
@@ -47,13 +47,6 @@ public class UserInterface extends JPanel
         {
             public void actionPerformed( ActionEvent e ){ prepAddress( address ); }
         });
-
-        //Create information displays
-        JLabel locationLabel = new JLabel();
-        locationLabel.setText( "Please ENTER a valid street address, zip code, location..." );
-        mainPanel.add( locationLabel );
-        locationLabel.setSize( 300, 50 );
-        locationLabel.setLocation( 535, 50 );
 
         //Add buttons to the panel
         JButton currentTemp = new JButton( "Current Temp" );
@@ -171,7 +164,7 @@ public class UserInterface extends JPanel
             {
                 location = address.getText();
                 location = location.replaceAll(" ", "+");
-                NwsParser.main( location );
+                NwsParser.run( location );
                 valid = true;
 
             }//try
