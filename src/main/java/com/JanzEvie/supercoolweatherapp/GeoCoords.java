@@ -16,7 +16,7 @@ public class GeoCoords {
     // Takes in an address in correct Google api format e.g.
     // 1600+Amphitheatre+Parkway,+Mountain+View,+CA
     // and uses Google's Geocoding API to turn it into a lat/long
-    public GeoCoords(String address) {
+    public GeoCoords(String address){
         HttpResponse<JsonNode> response = Unirest.get("https://maps.googleapis.com/maps/api/geocode/json").
                 queryString("key", ApiKey.key).
                 queryString("address", address).asJson();
