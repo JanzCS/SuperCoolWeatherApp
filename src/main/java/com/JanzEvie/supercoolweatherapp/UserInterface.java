@@ -2,11 +2,11 @@ package com.JanzEvie.supercoolweatherapp;//package com.JanzEvie.app;
 
 import java.awt.*;
 import java.awt.event.*;
+import javax.management.RuntimeErrorException;
 import javax.swing.*;
 
 public class UserInterface extends JPanel
 {
-
     /*********************************************************
      *					Member variables					 *
      *********************************************************/
@@ -38,23 +38,19 @@ public class UserInterface extends JPanel
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
         //Create a set up location text field
-        JTextField address = new JTextField( "" , 50 );
+        JTextField address = new JTextField( "Search location, zip..." , 50 );
         address.setBounds( 400, 100, 500, 50 );
         mainPanel.add( address );
 
         //Add an action listener to the text field
         address.addActionListener( new ActionListener()
         {
-            public void actionPerformed( ActionEvent e )
-            {
-                prepAddress( address );
-            }
-
+            public void actionPerformed( ActionEvent e ){ prepAddress( address ); }
         });
 
         //Create information displays
         JLabel locationLabel = new JLabel();
-        locationLabel.setText( "Please enter a valid street address:" );
+        locationLabel.setText( "Please ENTER a valid street address, zip code, location..." );
         mainPanel.add( locationLabel );
         locationLabel.setSize( 300, 50 );
         locationLabel.setLocation( 535, 50 );
@@ -143,7 +139,6 @@ public class UserInterface extends JPanel
         //Display the current temperature
         if( wantsCurrentTemp )
         {
-            //
 
         }//if
 
@@ -167,16 +162,26 @@ public class UserInterface extends JPanel
      *********************************************************/
     static public void prepAddress( JTextField address )
     {
-        location = address.getText();
-        location = location.replaceAll( " ", "+" );
-        System.out.println( location );
+        boolean valid = false;
 
-        //If the user did not enter a valid address
-        //if( !validAddress )
-        //{
-        //Print out an error message
-        //JOptionPane.showMessageDialog( null, "This is not a valid address. Please try again.", "Error Msg", JOptionPane.INFORMATION_MESSAGE );
-        //}
+        //Obtain a valid address from the user
+        while( !valid )
+        {
+            try
+            {
+                location = address.getText();
+                location = location.replaceAll(" ", "+");
+                NwsParser.main( location );
+                valid = true;
+
+            }//try
+
+            catch ( RuntimeErrorException e )
+            {
+                JOptionPane.showMessageDialog(null, "This is not a valid address. Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        }//while
 
     }//prepAddress
 
