@@ -3,6 +3,8 @@ package com.JanzEvie.supercoolweatherapp;//package com.JanzEvie.app;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.*;
 
 
@@ -60,8 +62,8 @@ public class UserInterface extends JPanel
     static public void addButtonFunctionality()
     {
         //"Current Temp" button
-        currentTemp.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ) {
+        currentTemp.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 showCurrentTemp = true;
                 showForecastToday = false;
                 showSevenDayForecast = false;
@@ -70,8 +72,8 @@ public class UserInterface extends JPanel
         });
 
         //"Today's Forecast" button
-        forecastToday.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ) {
+        forecastToday.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 showCurrentTemp = false;
                 showForecastToday = true;
                 showSevenDayForecast = false;
@@ -80,8 +82,8 @@ public class UserInterface extends JPanel
         });
 
         //"Seven Day Forecast" button
-        sevenDayForecast.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ) {
+        sevenDayForecast.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 showCurrentTemp = false;
                 showForecastToday = false;
                 showSevenDayForecast = true;
@@ -96,9 +98,17 @@ public class UserInterface extends JPanel
      *********************************************************/
     static public void addTextFieldFunctionality()
     {
-        address.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ) {
-                getAddress( address ); }
+        address.addFocusListener( new FocusListener() {
+            public void focusGained( FocusEvent e )
+            {
+                address.setBackground( Color.WHITE );
+            }
+
+            public void focusLost( FocusEvent e ) {
+                getAddress( address );
+                address.setBackground( new Color( 229, 255, 204) );
+            }
+
         });
 
     }//addTextFieldFunctionality
@@ -123,7 +133,7 @@ public class UserInterface extends JPanel
             }
 
             catch ( RuntimeException e ) {
-                JOptionPane.showMessageDialog(null, "This is not a valid address. Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "This is not a valid address. Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE );
             }
 
             valid = true;
@@ -142,9 +152,9 @@ public class UserInterface extends JPanel
         super.paint( g );
 
         //Display desired weather information on display panel
-        if( showCurrentTemp ) { paintCurrentTemp( g ); }
-        else if( showForecastToday ) { paintForecastToday( g ); }
-        else if( showSevenDayForecast ) { paintSevenDayForecast( g ); }
+        if (showCurrentTemp && location != null) { paintCurrentTemp(g); }
+        else if (showForecastToday) { paintForecastToday(g); }
+        else if (showSevenDayForecast) { paintSevenDayForecast(g); }
 
     }//paint
 
@@ -176,7 +186,8 @@ public class UserInterface extends JPanel
     {
         for( int i = 0; i < 14; i++ ) {
             g.drawString( forecast[ i ].toString(), 200,( 20 + 25 * ( i + 1 )));
-            //g.drawImage( forecast[ i ].icon, 0, 0, this); // see javadoc for more info on the parameters
+            ImageIcon image = new ImageIcon( forecast[ i ].icon );
+            g.drawImage( image, 0, 0, this); // see javadoc for more info on the parameters
         }
 
     }//paintSevenDayForecast
@@ -245,7 +256,7 @@ public class UserInterface extends JPanel
     static public void setUpMainPanel()
     {
         mainPanel.setSize(1280, 1024);
-        mainPanel.setBackground( Color.LIGHT_GRAY );
+        mainPanel.setBackground( Color.WHITE );
         mainPanel.setLayout( null );
         mainPanel.setLayout( new BorderLayout() );
 
