@@ -1,7 +1,8 @@
 package com.JanzEvie.supercoolweatherapp;//package com.JanzEvie.app;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class UserInterface extends JPanel
@@ -12,6 +13,7 @@ public class UserInterface extends JPanel
     static JFrame frame = null;
     static JPanel mainPanel = null;
     static UserInterface displayPanel = null;
+    static JLabel heading = null;
     static JTextField address = null;
     static JButton currentTemp = null;
     static JButton forecastToday = null;
@@ -32,6 +34,7 @@ public class UserInterface extends JPanel
         frame = new JFrame();
         mainPanel = new JPanel();
         displayPanel = new UserInterface();
+        heading = new JLabel();
         address = new JTextField( "Search address, location, zip..." , 50 );
         currentTemp = new JButton( "Current Temp" );
         forecastToday = new JButton( "Today's Forecast" );
@@ -40,11 +43,10 @@ public class UserInterface extends JPanel
         //Set up the applet
         setUpMainPanel();
         setUpDisplayPanel();
+        setUpHeading();
         setUpFrame();
         setUpTextField(); //also sets up functionality of text field
-        addTextFieldToApp();
         setUpButtons(); //also sets up functionality of buttons
-        addButtonsToApp();
 
         //Make the window visible
         frame.setVisible( true );
@@ -89,17 +91,6 @@ public class UserInterface extends JPanel
     }//addButtonFunctionality
 
     /*********************************************************
-     *			    		addButtonsToApp		    		 *
-     *********************************************************/
-    static public void addButtonsToApp()
-    {
-        mainPanel.add( currentTemp );
-        mainPanel.add( forecastToday );
-        mainPanel.add( sevenDayForecast );
-
-    }//addButtonsToApp
-
-    /*********************************************************
      *				   addTextFieldFunctionality	   		 *
      *********************************************************/
     static public void addTextFieldFunctionality()
@@ -110,15 +101,6 @@ public class UserInterface extends JPanel
         });
 
     }//addTextFieldFunctionality
-
-    /*********************************************************
-     *			    		addTextFieldToApp	    		 *
-     *********************************************************/
-    static public void addTextFieldToApp()
-    {
-        mainPanel.add( address );
-
-    }//addTextFieldToApp
 
     /*********************************************************
      *						getAddress						 *
@@ -175,10 +157,7 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintCurrentTemp( Graphics g )
     {
-        JLabel day = new JLabel();
-        day.setText( now.toString() );
-        displayPanel.add( day );
-        day.setBounds( 200, 150, 250, 25 );
+        g.drawString( now.toString(), 200, 200);
 
     }//paintCurrentTemp
 
@@ -187,20 +166,10 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintForecastToday( Graphics g )
     {
-        JLabel day = new JLabel();
-        day.setText( forecast[ 0 ].toString() );
-        displayPanel.add( day );
-        day.setBounds( 200, 150, 250, 25 );
-
-        JLabel dayForecast = new JLabel();
-        dayForecast.setText( forecast[ 0 ].detailedForecast );
-        displayPanel.add( dayForecast );
-        dayForecast.setBounds( 200, 200, 400, 25 );
-
-        JLabel night = new JLabel();
-        night.setText( forecast[ 1 ].toString() );
-        displayPanel.add( night );
-        night.setBounds( 200, 250, 250, 25 );
+       g.drawString( forecast[ 0 ].toString(), 200,150 );
+       g.drawString( forecast[ 0 ].detailedForecast, 100,200 );
+       g.drawString( forecast[ 1 ].toString(), 200,250 );
+       g.drawString( forecast[ 1 ].detailedForecast, 100,300 );
 
     }//paintForecastToday
 
@@ -209,37 +178,13 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintSevenDayForecast( Graphics g )
     {
-        JLabel day0 = new JLabel();
-        JLabel day1 = new JLabel();
-        JLabel day2 = new JLabel();
-        JLabel day3 = new JLabel();
-        JLabel day4 = new JLabel();
-        JLabel day5 = new JLabel();
-        JLabel day6 = new JLabel();
-
-        day0.setText( forecast[ 0 ].toString() );
-        day1.setText( forecast[ 1 ].toString() );
-        day2.setText( forecast[ 2 ].toString() );
-        day3.setText( forecast[ 3 ].toString() );
-        day4.setText( forecast[ 4 ].toString() );
-        day5.setText( forecast[ 5 ].toString() );
-        day6.setText( forecast[ 6 ].toString() );
-
-        displayPanel.add( day0 );
-        displayPanel.add( day1 );
-        displayPanel.add( day2 );
-        displayPanel.add( day3 );
-        displayPanel.add( day4 );
-        displayPanel.add( day5 );
-        displayPanel.add( day6 );
-
-        day0.setBounds( 200, 50, 250, 25 );
-        day1.setBounds( 200, 100, 250, 25 );
-        day2.setBounds( 200, 150, 250, 25 );
-        day3.setBounds( 200, 200, 250, 25 );
-        day4.setBounds( 200, 250, 250, 25 );
-        day5.setBounds( 200, 300, 250, 25 );
-        day6.setBounds( 200, 350, 250, 25 );
+        //Another way to print a string on a jpanel
+        //gr.drawString("string literal or a string variable", 0,10);
+        //g.drawImage(image, 0, 0, this); // see javadoc for more info on the parameters
+        for( int i = 0; i < 14; i++ ) {
+            g.drawString( forecast[ i ].toString(), 200,( 20 + 25 * ( i + 1 )));
+            //g.drawImage( forecast[ i ].icon, 0, 0, this); // see javadoc for more info on the parameters
+        }
 
     }//paintSevenDayForecast
 
@@ -252,6 +197,9 @@ public class UserInterface extends JPanel
         forecastToday.setBounds( 500, 200, 300, 50 );
         sevenDayForecast.setBounds( 850, 200, 300, 50 );
         addButtonFunctionality();
+        mainPanel.add( currentTemp );
+        mainPanel.add( forecastToday );
+        mainPanel.add( sevenDayForecast );
 
     }//setUpButtons
 
@@ -283,12 +231,28 @@ public class UserInterface extends JPanel
     }//setUpFrame
 
     /*********************************************************
+     *					    setUpHeading		   			 *
+     *********************************************************/
+    static public void setUpHeading()
+    {
+        //Set the heading's font
+        Font font = new Font("Century",Font.BOLD,20);
+
+        //Add the heading
+        heading.setText( "Super Cool Weather App" );
+        heading.setFont( font );
+        heading.setBounds( 540, 50, 500, 25 );
+        mainPanel.add( heading );
+
+    }//setUpHeading
+
+    /*********************************************************
      *					    setUpMainPanel					 *
      *********************************************************/
     static public void setUpMainPanel()
     {
         mainPanel.setSize(1280, 1024);
-        mainPanel.setBackground( Color.WHITE );
+        mainPanel.setBackground( Color.LIGHT_GRAY );
         mainPanel.setLayout( null );
         mainPanel.setLayout( new BorderLayout() );
 
@@ -301,6 +265,7 @@ public class UserInterface extends JPanel
     {
         address.setBounds( 400, 100, 500, 50 );
         addTextFieldFunctionality();
+        mainPanel.add( address );
 
     }//setUpTextField
 
