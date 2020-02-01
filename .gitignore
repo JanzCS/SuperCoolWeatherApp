@@ -2,3 +2,4 @@
 .target/
 SuperCoolWeatherApp.iml
 target/
+src/main/java/com/JanzEvie/supercoolweatherapp/ApiKey.java

@@ -18,7 +18,7 @@ public class GeoCoords {
     // and uses Google's Geocoding API to turn it into a lat/long
     public GeoCoords(String address) {
         HttpResponse<JsonNode> response = Unirest.get("https://maps.googleapis.com/maps/api/geocode/json").
-                queryString("key", "AIzaSyBQSIK6kkO9WVcOc9EhH7HcWAsbuqp2Zto").
+                queryString("key", ApiKey.key).
                 queryString("address", address).asJson();
         JSONObject responseJson = response.getBody().getObject();
         if (responseJson.getJSONArray("results").length() == 0) {
