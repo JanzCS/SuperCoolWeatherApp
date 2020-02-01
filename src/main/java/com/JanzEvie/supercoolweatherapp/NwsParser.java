@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class NwsParser {
     public static void main(String[] args) {
-        GeoCoords test = new GeoCoords("801+W+White+St,+Marion,+IL");
+        GeoCoords test = new GeoCoords(args[0]);
         HttpResponse<JsonNode> response = Unirest.get("https://api.weather.gov/points/" + test.toString()).asJson();
         if (response.getStatus() != 200) {
             throw new RuntimeException("HTTP Code " + response.getStatus() + ": " + response.getStatusText());
