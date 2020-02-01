@@ -11,9 +11,10 @@ import java.util.Date;
 
 public class NwsParser {
     public static void main(String[] args) {
-        run(args[0]);
+        Forecast[] test = getSevenDayForecast(args[0]);
+        System.out.println(test[0]);
     }
-    public static void run(String arg) {
+    public static Forecast[] getSevenDayForecast(String arg) {
         GeoCoords test = new GeoCoords(arg);
         HttpResponse<JsonNode> response = Unirest.get("https://api.weather.gov/points/" + test.toString()).asJson();
         if (response.getStatus() != 200) {
@@ -21,10 +22,12 @@ public class NwsParser {
         }
         response = Unirest.get(response.getBody().getObject().getJSONObject("properties").getString("forecast")).asJson();
         JSONObject responseJson = response.getBody().getObject();
-        JSONArray forecasts = responseJson.getJSONObject("properties").getJSONArray("periods");
-        for (int i = 0; i < forecasts.length(); i++) {
-            Forecast forecast = new Forecast(forecasts.getJSONObject(i));
-            System.out.println(forecast);
+        JSONArray forecastsJson = responseJson.getJSONObject("properties").getJSONArray("periods");
+        Forecast[] forecasts = new Forecast[forecastsJson.length()];
+        for (int i = 0; i < forecastsJson.length(); i++) {
+            Forecast forecast = new Forecast(forecastsJson.getJSONObject(i));
+            forecasts[i] = forecast;
         }
+        return forecasts;
     }
 }
