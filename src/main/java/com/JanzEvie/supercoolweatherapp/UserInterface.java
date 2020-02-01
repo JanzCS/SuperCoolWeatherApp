@@ -1,11 +1,16 @@
 package com.JanzEvie.supercoolweatherapp;//package com.JanzEvie.app;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.*;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class UserInterface extends JPanel
@@ -172,10 +177,17 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintForecastToday( Graphics g )
     {
-       g.drawString( forecast[ 0 ].toString(), 200,150 );
-       g.drawString( forecast[ 0 ].detailedForecast, 100,200 );
-       g.drawString( forecast[ 1 ].toString(), 200,250 );
-       g.drawString( forecast[ 1 ].detailedForecast, 100,300 );
+        try {
+            g.drawImage(ImageIO.read(new URL(forecast[0].icon)),100,100, null);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        g.drawString( forecast[ 0 ].toString(), 200,150 );
+        g.drawString( forecast[ 0 ].detailedForecast, 100,200 );
+        g.drawString( forecast[ 1 ].toString(), 200,250 );
+        g.drawString( forecast[ 1 ].detailedForecast, 100,300 );
 
     }//paintForecastToday
 
@@ -189,7 +201,6 @@ public class UserInterface extends JPanel
             ImageIcon image = new ImageIcon( forecast[ i ].icon );
             g.drawImage( image, 0, 0, this); // see javadoc for more info on the parameters
         }
-
     }//paintSevenDayForecast
 
     /*********************************************************
