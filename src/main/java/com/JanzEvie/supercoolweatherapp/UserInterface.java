@@ -1,8 +1,8 @@
 package com.JanzEvie.supercoolweatherapp;//package com.JanzEvie.app;
 
 import java.awt.*;
-import java.awt.event.*;
-import javax.management.RuntimeErrorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class UserInterface extends JPanel
@@ -11,16 +11,19 @@ public class UserInterface extends JPanel
      *					Member variables					 *
      *********************************************************/
     static JFrame frame = null;
-    static UserInterface mainPanel = null;
+    static JPanel mainPanel = null;
+    static UserInterface displayPanel = null;
+    static JLabel heading = null;
     static JTextField address = null;
     static JButton currentTemp = null;
     static JButton forecastToday = null;
     static JButton sevenDayForecast = null;
     static Forecast[] forecast = null;
+    static Forecast now = null;
     static String location = null;
-    static boolean wantsCurrentTemp = false;
-    static boolean wantsForecastToday = false;
-    static boolean wantsSevenDayForecast = false;
+    static boolean showCurrentTemp = false;
+    static boolean showForecastToday = false;
+    static boolean showSevenDayForecast = false;
 
     /*********************************************************
      * 							main						 *
@@ -29,7 +32,9 @@ public class UserInterface extends JPanel
     {
         //Initialize all of the objects for the java applet
         frame = new JFrame();
-        mainPanel = new UserInterface();
+        mainPanel = new JPanel();
+        displayPanel = new UserInterface();
+        heading = new JLabel();
         address = new JTextField( "Search address, location, zip..." , 50 );
         currentTemp = new JButton( "Current Temp" );
         forecastToday = new JButton( "Today's Forecast" );
@@ -37,11 +42,11 @@ public class UserInterface extends JPanel
 
         //Set up the applet
         setUpMainPanel();
+        setUpDisplayPanel();
+        setUpHeading();
         setUpFrame();
-        setUpTextField();
-        addTextFieldToApp();
-        setUpButtons();
-        addButtonsToApp();
+        setUpTextField(); //also sets up functionality of text field
+        setUpButtons(); //also sets up functionality of buttons
 
         //Make the window visible
         frame.setVisible( true );
@@ -56,40 +61,34 @@ public class UserInterface extends JPanel
         //"Current Temp" button
         currentTemp.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
-                displayCurrentTemp();
-                mainPanel.repaint();
+                showCurrentTemp = true;
+                showForecastToday = false;
+                showSevenDayForecast = false;
+                displayPanel.repaint();
             }
         });
 
         //"Today's Forecast" button
         forecastToday.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
-                displayForecastToday();
-                mainPanel.repaint();
+                showCurrentTemp = false;
+                showForecastToday = true;
+                showSevenDayForecast = false;
+                displayPanel.repaint();
             }
         });
 
         //"Seven Day Forecast" button
         sevenDayForecast.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
-                displaySevenDayForecast();
-                mainPanel.repaint();
+                showCurrentTemp = false;
+                showForecastToday = false;
+                showSevenDayForecast = true;
+                displayPanel.repaint();
             }
         });
 
     }//addButtonFunctionality
-
-    /*********************************************************
-     *			    		addButtonsToApp		    		 *
-     *********************************************************/
-    static public void addButtonsToApp()
-    {
-        mainPanel.add( currentTemp );
-        mainPanel.add( forecastToday );
-        mainPanel.add( sevenDayForecast );
-
-    }//addButtonsToApp
-
 
     /*********************************************************
      *				   addTextFieldFunctionality	   		 *
@@ -97,100 +96,16 @@ public class UserInterface extends JPanel
     static public void addTextFieldFunctionality()
     {
         address.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ){ prepAddress( address ); }
+            public void actionPerformed( ActionEvent e ) {
+                getAddress( address ); }
         });
 
     }//addTextFieldFunctionality
 
-
     /*********************************************************
-     *			    		addTextFieldToApp	    		 *
+     *						getAddress						 *
      *********************************************************/
-    static public void addTextFieldToApp()
-    {
-        mainPanel.add( address );
-
-    }//addTextFieldToApp
-
-
-    /*********************************************************
-     *					displayCurrentTemp					 *
-     *********************************************************/
-    static public void displayCurrentTemp()
-    {
-        wantsCurrentTemp = true;
-        wantsForecastToday = false;
-        wantsSevenDayForecast = false;
-
-    }//displayCurrentTemp
-
-
-    /*********************************************************
-     *					displayForecastToday				 *
-     *********************************************************/
-    static public void displayForecastToday()
-    {
-        wantsCurrentTemp = false;
-        wantsForecastToday = true;
-        wantsSevenDayForecast = false;
-
-    }//displayForecastToday
-
-
-    /*********************************************************
-     *					displaySevenDayForecast				 *
-     *********************************************************/
-    static public void displaySevenDayForecast()
-    {
-        wantsCurrentTemp = false;
-        wantsForecastToday = false;
-        wantsSevenDayForecast = true;
-
-    }//displaySevenDayForecast
-
-
-    /*********************************************************
-     *							paint						 *
-     *********************************************************/
-    //Gets called any time the window needs to be redrawn
-    @Override
-    public void paint( Graphics g )
-    {
-        //Call the constructor for the original method
-        super.paint( g );
-
-        //Paint the result window
-        g.setColor( Color.BLACK );
-        g.fillRect( 450, 300, 4, 400 );
-        g.fillRect( 850, 300, 4, 400 );
-        g.fillRect( 450, 300, 400, 4 );
-        g.fillRect( 450, 700, 400, 4 );
-
-        //Display the current temperature
-        if( wantsCurrentTemp )
-        {
-
-        }//if
-
-        //Display today's forecast
-        else if( wantsForecastToday )
-        {
-
-        }//else if
-
-        //Display the seven day forecast
-        else if( wantsSevenDayForecast )
-        {
-
-        }//else if
-
-    }//paint
-
-
-    /*********************************************************
-     *						prepAddress						 *
-     *********************************************************/
-    static public void prepAddress( JTextField address )
+    static public void getAddress( JTextField address )
     {
         boolean valid = false;
 
@@ -203,6 +118,7 @@ public class UserInterface extends JPanel
                 location = address.getText();
                 location = location.replaceAll(" ", "+");
                 forecast = NwsParser.getSevenDayForecast( location );
+                now = NwsParser.getCurrentWeather( location );
             }
 
             catch ( RuntimeException e ) {
@@ -213,7 +129,64 @@ public class UserInterface extends JPanel
 
         }//while
 
-    }//prepAddress
+    }//getAddress
+
+    /*********************************************************
+     *							paint						 *
+     *********************************************************/
+    @Override
+    public void paint( Graphics g )
+    {
+        //Call the constructor for the original method
+        super.paint( g );
+
+        //Reset display panel
+        removeAll();
+        revalidate();
+        repaint();
+
+        //Display desired weather information on display panel
+        if( showCurrentTemp ) { paintCurrentTemp( g ); }
+        else if( showForecastToday ) { paintForecastToday( g ); }
+        else if( showSevenDayForecast ) { paintSevenDayForecast( g ); }
+
+    }//paint
+
+    /*********************************************************
+     *					   paintCurrentTemp		    		 *
+     *********************************************************/
+    public void paintCurrentTemp( Graphics g )
+    {
+        g.drawString( now.toString(), 200, 200);
+
+    }//paintCurrentTemp
+
+    /*********************************************************
+     *				   paintForecastToday		    		 *
+     *********************************************************/
+    public void paintForecastToday( Graphics g )
+    {
+       g.drawString( forecast[ 0 ].toString(), 200,150 );
+       g.drawString( forecast[ 0 ].detailedForecast, 100,200 );
+       g.drawString( forecast[ 1 ].toString(), 200,250 );
+       g.drawString( forecast[ 1 ].detailedForecast, 100,300 );
+
+    }//paintForecastToday
+
+    /*********************************************************
+     *				   paintSevenDayForecast	    		 *
+     *********************************************************/
+    public void paintSevenDayForecast( Graphics g )
+    {
+        //Another way to print a string on a jpanel
+        //gr.drawString("string literal or a string variable", 0,10);
+        //g.drawImage(image, 0, 0, this); // see javadoc for more info on the parameters
+        for( int i = 0; i < 14; i++ ) {
+            g.drawString( forecast[ i ].toString(), 200,( 20 + 25 * ( i + 1 )));
+            //g.drawImage( forecast[ i ].icon, 0, 0, this); // see javadoc for more info on the parameters
+        }
+
+    }//paintSevenDayForecast
 
     /*********************************************************
      *					    setUpButtons		    		 *
@@ -224,8 +197,25 @@ public class UserInterface extends JPanel
         forecastToday.setBounds( 500, 200, 300, 50 );
         sevenDayForecast.setBounds( 850, 200, 300, 50 );
         addButtonFunctionality();
+        mainPanel.add( currentTemp );
+        mainPanel.add( forecastToday );
+        mainPanel.add( sevenDayForecast );
 
     }//setUpButtons
+
+    /*********************************************************
+     *					    setUpDisplayPanel				 *
+     *********************************************************/
+    static public void setUpDisplayPanel()
+    {
+        mainPanel.add( displayPanel );
+        displayPanel.setBounds( 350, 300, 580, 400 );
+        displayPanel.setBackground( Color.WHITE );
+        displayPanel.setLayout( null );
+        displayPanel.setLayout( new BorderLayout() );
+        displayPanel.setBorder( BorderFactory.createLineBorder( Color.BLACK, 3 ) );
+
+    }//setUpDisplayPanel
 
     /*********************************************************
      *					    setUpFrame		    			 *
@@ -233,7 +223,7 @@ public class UserInterface extends JPanel
     static public void setUpFrame()
     {
         frame.setContentPane( mainPanel );
-        frame.setSize( 1280, 1024 );
+        frame.setSize( 400, 400 );
         frame.setTitle( "Super Cool Weather App" );
         frame.getContentPane().setLayout( null );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -241,14 +231,30 @@ public class UserInterface extends JPanel
     }//setUpFrame
 
     /*********************************************************
+     *					    setUpHeading		   			 *
+     *********************************************************/
+    static public void setUpHeading()
+    {
+        //Set the heading's font
+        Font font = new Font("Century",Font.BOLD,20);
+
+        //Add the heading
+        heading.setText( "Super Cool Weather App" );
+        heading.setFont( font );
+        heading.setBounds( 540, 50, 500, 25 );
+        mainPanel.add( heading );
+
+    }//setUpHeading
+
+    /*********************************************************
      *					    setUpMainPanel					 *
      *********************************************************/
     static public void setUpMainPanel()
     {
         mainPanel.setSize(1280, 1024);
-        mainPanel.setBackground(Color.WHITE);
-        mainPanel.setLayout(null);
-        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBackground( Color.LIGHT_GRAY );
+        mainPanel.setLayout( null );
+        mainPanel.setLayout( new BorderLayout() );
 
     }//setUpMainPanel
 
@@ -259,6 +265,7 @@ public class UserInterface extends JPanel
     {
         address.setBounds( 400, 100, 500, 50 );
         addTextFieldFunctionality();
+        mainPanel.add( address );
 
     }//setUpTextField
 
