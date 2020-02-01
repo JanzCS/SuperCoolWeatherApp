@@ -8,7 +8,7 @@ import kong.unirest.json.JSONObject;
 public class GeoCoords {
     public Float lat;
     public Float lng;
-    private static final String baseUrl = "https://maps.googleapis.com/maps/api/geocode/json";
+    private static final String baseUrl = "https://maps.googleapis.com/maps/api/geocode/json"
 
     public GeoCoords(float lat, float lng) {
         this.lat = lat;
@@ -33,7 +33,7 @@ public class GeoCoords {
         return responseJson.getJSONArray("results").getJSONObject(0).getString("formatted_address");
     }
 
-    public static JSONObject getGeocodeJson(String address) {
+    private static JSONObject getGeocodeJson(String address) {
         HttpResponse<JsonNode> response = Unirest.get(baseUrl).
                 queryString("key", ApiKey.key).
                 queryString("address", address).asJson();
