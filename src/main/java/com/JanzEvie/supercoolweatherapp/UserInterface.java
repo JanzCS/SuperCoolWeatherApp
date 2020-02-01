@@ -79,9 +79,9 @@ public class UserInterface extends JPanel
         //"Seven Day Forecast" button
         sevenDayForecast.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
-                showCurrentTemp = true;
+                showCurrentTemp = false;
                 showForecastToday = false;
-                showSevenDayForecast = false;
+                showSevenDayForecast = true;
                 displayPanel.repaint();
             }
         });
@@ -161,6 +161,11 @@ public class UserInterface extends JPanel
         //Call the constructor for the original method
         super.paint( g );
 
+        removeAll();
+        //Paint over whatever is currently in display panel
+        //g.setColor( Color.WHITE );
+        //g.fillRect( 4, 4, 572, 392 );
+
         //Display desired weather information
         if( showCurrentTemp ) { paintCurrentTemp( g ); }
         else if( showForecastToday ) { paintForecastToday( g ); }
@@ -183,7 +188,23 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintForecastToday( Graphics g )
     {
+        JLabel day = new JLabel();
+        day.setText( forecast[ 0 ].toString() );
+        displayPanel.add( day );
+        day.setSize( 250, 25 );
+        day.setLocation( 200, 150 );
 
+        JLabel dayForecast = new JLabel();
+        dayForecast.setText( forecast[ 0 ].detailedForecast );
+        displayPanel.add( dayForecast );
+        dayForecast.setSize( 400, 25 );
+        dayForecast.setLocation( 200, 200 );
+
+        JLabel night = new JLabel();
+        night.setText( forecast[ 1 ].toString() );
+        displayPanel.add( night );
+        night.setSize( 250, 25 );
+        night.setLocation( 200, 250 );
 
     }//paintForecastToday
 
@@ -193,7 +214,45 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintSevenDayForecast( Graphics g )
     {
+        JLabel day0 = new JLabel();
+        JLabel day1 = new JLabel();
+        JLabel day2 = new JLabel();
+        JLabel day3 = new JLabel();
+        JLabel day4 = new JLabel();
+        JLabel day5 = new JLabel();
+        JLabel day6 = new JLabel();
 
+        day0.setText( forecast[ 0 ].toString() );
+        day1.setText( forecast[ 1 ].toString() );
+        day2.setText( forecast[ 2 ].toString() );
+        day3.setText( forecast[ 3 ].toString() );
+        day4.setText( forecast[ 4 ].toString() );
+        day5.setText( forecast[ 5 ].toString() );
+        day6.setText( forecast[ 6 ].toString() );
+
+        displayPanel.add( day0 );
+        displayPanel.add( day1 );
+        displayPanel.add( day2 );
+        displayPanel.add( day3 );
+        displayPanel.add( day4 );
+        displayPanel.add( day5 );
+        displayPanel.add( day6 );
+
+        day0.setSize( 250, 25 );
+        day1.setSize( 250, 25 );
+        day2.setSize( 250, 25 );
+        day3.setSize( 250, 25 );
+        day4.setSize( 250, 25 );
+        day5.setSize( 250, 25 );
+        day6.setSize( 250, 25 );
+
+        day0.setLocation( 200, 50 );
+        day1.setLocation( 200, 100 );
+        day2.setLocation( 200, 150 );
+        day3.setLocation( 200, 200 );
+        day4.setLocation( 200, 250 );
+        day5.setLocation( 200, 300 );
+        day6.setLocation( 200, 350 );
 
     }//paintSevenDayForecast
 
@@ -218,10 +277,10 @@ public class UserInterface extends JPanel
     {
         mainPanel.add( displayPanel ); //add the game panel to the main panel
         displayPanel.setBounds( 350, 300, 580, 400 );
-        displayPanel.setBackground( Color.BLACK );
+        displayPanel.setBackground( Color.WHITE );
         displayPanel.setLayout( null );
         displayPanel.setLayout( new BorderLayout() );
-        displayPanel.setBorder( BorderFactory.createLineBorder( Color.RED, 3 ) );
+        displayPanel.setBorder( BorderFactory.createLineBorder( Color.BLACK, 3 ) );
 
     }//setUpDisplayPanel
 
