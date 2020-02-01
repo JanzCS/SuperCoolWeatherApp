@@ -2,7 +2,6 @@ package com.JanzEvie.supercoolweatherapp;//package com.JanzEvie.app;
 
 import java.awt.*;
 import java.awt.event.*;
-import javax.management.RuntimeErrorException;
 import javax.swing.*;
 
 public class UserInterface extends JPanel
@@ -18,6 +17,7 @@ public class UserInterface extends JPanel
     static JButton forecastToday = null;
     static JButton sevenDayForecast = null;
     static Forecast[] forecast = null;
+    static Forecast now = null;
     static String location = null;
     static boolean showCurrentTemp = false;
     static boolean showForecastToday = false;
@@ -41,9 +41,9 @@ public class UserInterface extends JPanel
         setUpMainPanel();
         setUpDisplayPanel();
         setUpFrame();
-        setUpTextField();
+        setUpTextField(); //also sets up functionality of text field
         addTextFieldToApp();
-        setUpButtons();
+        setUpButtons(); //also sets up functionality of buttons
         addButtonsToApp();
 
         //Make the window visible
@@ -99,7 +99,6 @@ public class UserInterface extends JPanel
 
     }//addButtonsToApp
 
-
     /*********************************************************
      *				   addTextFieldFunctionality	   		 *
      *********************************************************/
@@ -112,7 +111,6 @@ public class UserInterface extends JPanel
 
     }//addTextFieldFunctionality
 
-
     /*********************************************************
      *			    		addTextFieldToApp	    		 *
      *********************************************************/
@@ -121,7 +119,6 @@ public class UserInterface extends JPanel
         mainPanel.add( address );
 
     }//addTextFieldToApp
-
 
     /*********************************************************
      *						getAddress						 *
@@ -139,6 +136,7 @@ public class UserInterface extends JPanel
                 location = address.getText();
                 location = location.replaceAll(" ", "+");
                 forecast = NwsParser.getSevenDayForecast( location );
+                now = NwsParser.getCurrentWeather( location );
             }
 
             catch ( RuntimeException e ) {
@@ -151,7 +149,6 @@ public class UserInterface extends JPanel
 
     }//getAddress
 
-
     /*********************************************************
      *							paint						 *
      *********************************************************/
@@ -161,27 +158,29 @@ public class UserInterface extends JPanel
         //Call the constructor for the original method
         super.paint( g );
 
+        //Reset display panel
         removeAll();
-        //Paint over whatever is currently in display panel
-        //g.setColor( Color.WHITE );
-        //g.fillRect( 4, 4, 572, 392 );
+        revalidate();
+        repaint();
 
-        //Display desired weather information
+        //Display desired weather information on display panel
         if( showCurrentTemp ) { paintCurrentTemp( g ); }
         else if( showForecastToday ) { paintForecastToday( g ); }
         else if( showSevenDayForecast ) { paintSevenDayForecast( g ); }
 
     }//paint
 
-
     /*********************************************************
      *					   paintCurrentTemp		    		 *
      *********************************************************/
     public void paintCurrentTemp( Graphics g )
     {
+        JLabel day = new JLabel();
+        day.setText( now.toString() );
+        displayPanel.add( day );
+        day.setBounds( 200, 150, 250, 25 );
 
     }//paintCurrentTemp
-
 
     /*********************************************************
      *				   paintForecastToday		    		 *
@@ -191,23 +190,19 @@ public class UserInterface extends JPanel
         JLabel day = new JLabel();
         day.setText( forecast[ 0 ].toString() );
         displayPanel.add( day );
-        day.setSize( 250, 25 );
-        day.setLocation( 200, 150 );
+        day.setBounds( 200, 150, 250, 25 );
 
         JLabel dayForecast = new JLabel();
         dayForecast.setText( forecast[ 0 ].detailedForecast );
         displayPanel.add( dayForecast );
-        dayForecast.setSize( 400, 25 );
-        dayForecast.setLocation( 200, 200 );
+        dayForecast.setBounds( 200, 200, 400, 25 );
 
         JLabel night = new JLabel();
         night.setText( forecast[ 1 ].toString() );
         displayPanel.add( night );
-        night.setSize( 250, 25 );
-        night.setLocation( 200, 250 );
+        night.setBounds( 200, 250, 250, 25 );
 
     }//paintForecastToday
-
 
     /*********************************************************
      *				   paintSevenDayForecast	    		 *
@@ -238,24 +233,15 @@ public class UserInterface extends JPanel
         displayPanel.add( day5 );
         displayPanel.add( day6 );
 
-        day0.setSize( 250, 25 );
-        day1.setSize( 250, 25 );
-        day2.setSize( 250, 25 );
-        day3.setSize( 250, 25 );
-        day4.setSize( 250, 25 );
-        day5.setSize( 250, 25 );
-        day6.setSize( 250, 25 );
-
-        day0.setLocation( 200, 50 );
-        day1.setLocation( 200, 100 );
-        day2.setLocation( 200, 150 );
-        day3.setLocation( 200, 200 );
-        day4.setLocation( 200, 250 );
-        day5.setLocation( 200, 300 );
-        day6.setLocation( 200, 350 );
+        day0.setBounds( 200, 50, 250, 25 );
+        day1.setBounds( 200, 100, 250, 25 );
+        day2.setBounds( 200, 150, 250, 25 );
+        day3.setBounds( 200, 200, 250, 25 );
+        day4.setBounds( 200, 250, 250, 25 );
+        day5.setBounds( 200, 300, 250, 25 );
+        day6.setBounds( 200, 350, 250, 25 );
 
     }//paintSevenDayForecast
-
 
     /*********************************************************
      *					    setUpButtons		    		 *
@@ -269,13 +255,12 @@ public class UserInterface extends JPanel
 
     }//setUpButtons
 
-
     /*********************************************************
      *					    setUpDisplayPanel				 *
      *********************************************************/
     static public void setUpDisplayPanel()
     {
-        mainPanel.add( displayPanel ); //add the game panel to the main panel
+        mainPanel.add( displayPanel );
         displayPanel.setBounds( 350, 300, 580, 400 );
         displayPanel.setBackground( Color.WHITE );
         displayPanel.setLayout( null );
@@ -283,7 +268,6 @@ public class UserInterface extends JPanel
         displayPanel.setBorder( BorderFactory.createLineBorder( Color.BLACK, 3 ) );
 
     }//setUpDisplayPanel
-
 
     /*********************************************************
      *					    setUpFrame		    			 *
