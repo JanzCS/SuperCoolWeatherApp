@@ -32,6 +32,6 @@ public class Forecast {
 
     @Override
     public String toString() {
-        return name + ": " + temperature + " degrees " + temperatureUnit;
+        return name + ": " + temperature + "°" + temperatureUnit;
     }
 }

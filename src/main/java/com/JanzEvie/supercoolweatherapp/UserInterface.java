@@ -140,11 +140,6 @@ public class UserInterface extends JPanel
         //Call the constructor for the original method
         super.paint( g );
 
-        //Reset display panel
-        removeAll();
-        revalidate();
-        repaint();
-
         //Display desired weather information on display panel
         if( showCurrentTemp ) { paintCurrentTemp( g ); }
         else if( showForecastToday ) { paintForecastToday( g ); }
@@ -178,9 +173,6 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintSevenDayForecast( Graphics g )
     {
-        //Another way to print a string on a jpanel
-        //gr.drawString("string literal or a string variable", 0,10);
-        //g.drawImage(image, 0, 0, this); // see javadoc for more info on the parameters
         for( int i = 0; i < 14; i++ ) {
             g.drawString( forecast[ i ].toString(), 200,( 20 + 25 * ( i + 1 )));
             //g.drawImage( forecast[ i ].icon, 0, 0, this); // see javadoc for more info on the parameters
