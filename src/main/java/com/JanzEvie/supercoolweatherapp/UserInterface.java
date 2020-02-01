@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+
 public class UserInterface extends JPanel
 {
     /*********************************************************
@@ -152,7 +153,7 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintCurrentTemp( Graphics g )
     {
-        g.drawString( now.toString(), 200, 200);
+        g.drawString( "Temp: " + now.toString(), 200, 200);
 
     }//paintCurrentTemp
 
@@ -228,7 +229,7 @@ public class UserInterface extends JPanel
     static public void setUpHeading()
     {
         //Set the heading's font
-        Font font = new Font("Century",Font.BOLD,20);
+        Font font = new Font("Century", Font.BOLD,20);
 
         //Add the heading
         heading.setText( "Super Cool Weather App" );
