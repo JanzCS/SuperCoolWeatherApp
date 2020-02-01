@@ -1,4 +1,4 @@
-//package com.JanzEvie.app;
+package com.JanzEvie.supercoolweatherapp;//package com.JanzEvie.app;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -180,4 +180,4 @@ public class UserInterface extends JPanel
 
     }//prepAddress
 
-}//UserInterface
+}//com.JanzEvie.supercoolweatherapp.UserInterface
