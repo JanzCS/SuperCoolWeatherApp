@@ -7,10 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import javax.swing.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.apache.commons.lang.WordUtils;
 
 
 public class UserInterface extends JPanel
@@ -29,6 +30,7 @@ public class UserInterface extends JPanel
     static Forecast[] forecast = null;
     static Forecast now = null;
     static String location = null;
+    static String fullLocation = null;
     static boolean showCurrentTemp = false;
     static boolean showForecastToday = false;
     static boolean showSevenDayForecast = false;
@@ -136,6 +138,7 @@ public class UserInterface extends JPanel
                 location = location.replaceAll(" ", "+");
                 forecast = NwsParser.getSevenDayForecast( location );
                 now = NwsParser.getCurrentWeather( location );
+                fullLocation = GeoCoords.getFullLocation( location );
                 address.setBackground( new Color( 229, 255, 204) );
             }
 
@@ -183,8 +186,20 @@ public class UserInterface extends JPanel
         catch ( MalformedURLException e ) {}
         catch ( IOException e ) {}
 
+        g.drawString( fullLocation, 5, 390);
         g.setFont(new Font( "Century", Font.PLAIN, 30));
-        g.drawString( now.shortForecast, 325, 225 );
+
+        if( now.shortForecast.length() > 14 )
+        {
+            StringBuilder str = new StringBuilder( now.shortForecast );
+            String[] splitStr = stringPrep( str, 14 );
+            g.drawString( splitStr[ 0 ], 325, 220 );
+            g.drawString( splitStr[ 1 ], 325, 255 );
+        }
+        else
+        {
+            g.drawString( now.shortForecast, 325, 220 );
+        }
 
         g.setFont(new Font( "Century", Font.BOLD, 30));
         g.drawString( "Temp" + now.toString(), 325, 175);
@@ -204,9 +219,35 @@ public class UserInterface extends JPanel
         catch ( MalformedURLException e ) {}
         catch (IOException e) {}
 
+        g.drawString( fullLocation, 5, 390);
+
         g.setFont( new Font( "Century", Font.PLAIN, 20 ) );
-        g.drawString( forecast[ 0 ].shortForecast, 275,140 );
-        g.drawString( forecast[ 1 ].shortForecast, 275,310 );
+
+        //Handle the first forecast
+        if( forecast[ 0 ].shortForecast.length() > 20 )
+        {
+            StringBuilder str = new StringBuilder( forecast[ 0 ].shortForecast );
+            String[] splitStr = stringPrep( str, 20 );
+            g.drawString( splitStr[ 0 ], 275, 140 );
+            g.drawString( splitStr[ 1 ], 275, 165 );
+        }
+        else
+        {
+            g.drawString( forecast[ 0 ].shortForecast, 275,140 );
+        }
+
+        //Handle the second forecast
+        if( forecast[ 1 ].shortForecast.length() > 20 )
+        {
+            StringBuilder str = new StringBuilder( forecast[ 0 ].shortForecast );
+            String[] splitStr = stringPrep( str, 20 );
+            g.drawString( splitStr[ 0 ], 275, 310 );
+            g.drawString( splitStr[ 1 ], 275, 335 );
+        }
+        else
+        {
+            g.drawString( forecast[ 1 ].shortForecast, 275,310 );
+        }
 
         g.setFont( new Font( "Century", Font.BOLD, 20 ) );
         g.drawString( forecast[ 0 ].toString(), 275,110 );
@@ -238,8 +279,21 @@ public class UserInterface extends JPanel
         catch ( MalformedURLException e ) {}
         catch ( IOException e ) {}
 
+        g.drawString( fullLocation, 5, 390);
+
         g.setFont( new Font( "Century", Font.PLAIN, 13 ) );
-        g.drawString( forecast[ i ].shortForecast, 30,290);
+        //Handle the first forecast
+        if( forecast[ 0 ].shortForecast.length() > 20 )
+        {
+            StringBuilder str = new StringBuilder( forecast[ 0 ].shortForecast );
+            String[] splitStr = stringPrep( str, 20 );
+            g.drawString( splitStr[ 0 ], 30, 290 );
+            g.drawString( splitStr[ 1 ], 30, 305 );
+        }
+        else
+        {
+            g.drawString( forecast[ i ].shortForecast, 30,290);
+        }
 
         g.setFont( new Font( "Century", Font.BOLD, 13 ) );
         g.drawString( forecast[ i ].toString(), 30,270);
@@ -251,8 +305,6 @@ public class UserInterface extends JPanel
         g.drawString( forecast[ i + 8 ].toString(), 205,340);
         g.drawString( forecast[ i + 10 ].toString(), 330,340);
         g.drawString( forecast[ i + 12 ].toString(), 455,340);
-
-
 
     }//paintSevenDayForecast
 
@@ -336,5 +388,27 @@ public class UserInterface extends JPanel
         mainPanel.add( address );
 
     }//setUpTextField
+
+    /*********************************************************
+     *					    stringPrep		        		 *
+     *********************************************************/
+    private String[] stringPrep( StringBuilder str, int maxLen )
+    {
+        String[] splitStr = null;
+
+        if( str.length() > maxLen ) {
+            for (int i = maxLen; i > 0; i--) {
+                if (str.charAt(i) == ' ') {
+                    str.setCharAt(i, '\n');
+                    break;
+                }
+            }
+
+            splitStr = str.toString().split("\n", 2);
+        }
+
+        return splitStr;
+
+    }//stringPrep
 
 }//com.JanzEvie.supercoolweatherapp.UserInterface

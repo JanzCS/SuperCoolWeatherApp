@@ -24,7 +24,7 @@ public class NwsParser {
         Forecast[] forecasts = new Forecast[forecastsJson.length()];
         for (int i = 0; i < forecastsJson.length(); i++) {
             Forecast forecast = new Forecast(forecastsJson.getJSONObject(i));
-            forecasts[i] = forecast;
+            forecasts[ i ] = forecast;
         }
         return forecasts;
     }
