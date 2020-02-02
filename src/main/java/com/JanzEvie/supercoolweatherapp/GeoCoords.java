@@ -3,6 +3,7 @@ package com.JanzEvie.supercoolweatherapp;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
+import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 
 public class GeoCoords {
@@ -22,9 +23,18 @@ public class GeoCoords {
         if (responseJson.getJSONArray("results").length() == 0) {
             throw new RuntimeException("Address not found or invalid.");
         }
-        if (responseJson.getJSONArray("results").getJSONArray(0).getJSONObject(3).getString("short_name")
-                != "US") {
-            throw new IllegalArgumentException("Entered location nost in the United States.\nTry again, commie.");
+        JSONArray address_components = responseJson.getJSONArray("results").getJSONObject(0).
+                getJSONArray("address_components");
+        for (int i = 0; i < address_components.length(); i++) {
+            JSONArray types = address_components.getJSONObject(i).getJSONArray("types");
+            for (int j = 0; j < types.length(); j++) {
+                if (types.getString(j) == "country") {
+                    if (address_components.getJSONObject(i).getString("short_name") != "US") {
+                        throw new IllegalArgumentException("Entered location nost in the United States.\nTry again, commie.\n" +
+                                "You entered " + address_components.getJSONObject(i).getString("short_name"));
+                    }
+                }
+            }
         }
         JSONObject coordsJson = responseJson.getJSONArray("results").getJSONObject(0).
                 getJSONObject("geometry").getJSONObject("location");
