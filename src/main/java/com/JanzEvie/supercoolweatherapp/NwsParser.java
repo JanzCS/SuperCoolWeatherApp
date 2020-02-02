@@ -13,8 +13,10 @@ public class NwsParser {
     private static final String baseUrl = "https://api.weather.gov/points/";
 
     public static void main(String[] args) {
-        Forecast test = getCurrentWeather(args[0]);
-        System.out.println(test);
+        HttpResponse<JsonNode> response = Unirest.get("https://www.ncdc.noaa.gov/cdo-web/api/v2/datasets").header("token",
+                "GTqWAAnltwSVYYFVRhvliewPLELyPnMQ").asJson();
+        JsonNode test = response.getBody();
+        System.out.println(test.toPrettyString());
     }
 
     public static Forecast[] getSevenDayForecast(String address) {
