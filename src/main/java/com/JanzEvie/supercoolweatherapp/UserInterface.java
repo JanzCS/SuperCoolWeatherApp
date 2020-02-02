@@ -139,7 +139,7 @@ public class UserInterface extends JPanel
 
             catch ( RuntimeException e ) {
                 address.setBackground( new Color( 255, 204, 204) );
-                JOptionPane.showMessageDialog(null, "This is not a valid address. Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE );
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error Message", JOptionPane.INFORMATION_MESSAGE );
             }
 
             valid = true;
@@ -305,7 +305,7 @@ public class UserInterface extends JPanel
         //Add the heading
         heading.setText( "Super Cool Weather App" );
         heading.setFont( font );
-        heading.setBounds( 540, 50, 500, 25 );
+        heading.setBounds( 520, 50, 500, 25 );
         mainPanel.add( heading );
 
     }//setUpHeading
