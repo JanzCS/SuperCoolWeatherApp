@@ -111,7 +111,6 @@ public class UserInterface extends JPanel
 
             public void focusLost( FocusEvent e ) {
                 getAddress( address );
-                address.setBackground( new Color( 229, 255, 204) );
             }
 
         });
@@ -135,9 +134,11 @@ public class UserInterface extends JPanel
                 location = location.replaceAll(" ", "+");
                 forecast = NwsParser.getSevenDayForecast( location );
                 now = NwsParser.getCurrentWeather( location );
+                address.setBackground( new Color( 229, 255, 204) );
             }
 
             catch ( RuntimeException e ) {
+                address.setBackground( new Color( 255, 204, 204) );
                 JOptionPane.showMessageDialog(null, "This is not a valid address. Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE );
             }
 
@@ -159,7 +160,10 @@ public class UserInterface extends JPanel
         //Display desired weather information on display panel
         if (showCurrentTemp && location != null) { paintCurrentTemp(g); }
         else if (showForecastToday) { paintForecastToday(g); }
-        else if (showSevenDayForecast) { paintSevenDayForecast(g); }
+        else if (showSevenDayForecast) {
+            try { paintSevenDayForecast(g); }
+            catch (IOException e) {}
+        }
 
     }//paint
 
@@ -168,7 +172,18 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintCurrentTemp( Graphics g )
     {
-        g.drawString( "Temp: " + now.toString(), 200, 200);
+        try
+        {
+            g.drawImage( ImageIO.read( new URL( forecast[ 0 ].icon ) ),100,100, 200, 200, null );
+        }
+        catch ( MalformedURLException e ) {}
+        catch ( IOException e ) {}
+
+        g.setFont(new Font( "Century", Font.PLAIN, 30));
+        g.drawString( now.shortForecast, 325, 225 );
+
+        g.setFont(new Font( "Century", Font.BOLD, 30));
+        g.drawString( "Temp" + now.toString(), 325, 175);
 
     }//paintCurrentTemp
 
@@ -177,30 +192,64 @@ public class UserInterface extends JPanel
      *********************************************************/
     public void paintForecastToday( Graphics g )
     {
-        try {
-            g.drawImage(ImageIO.read(new URL(forecast[0].icon)),100,100, null);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        try
+        {
+            g.drawImage( ImageIO.read( new URL( forecast[ 0 ].icon ) ),100,35, 150, 150, null );
+            g.drawImage(ImageIO.read( new URL( forecast[ 1 ].icon ) ),100,210,150, 150, null );
         }
-        g.drawString( forecast[ 0 ].toString(), 200,150 );
-        g.drawString( forecast[ 0 ].detailedForecast, 100,200 );
-        g.drawString( forecast[ 1 ].toString(), 200,250 );
-        g.drawString( forecast[ 1 ].detailedForecast, 100,300 );
+        catch ( MalformedURLException e ) {}
+        catch (IOException e) {}
+
+        g.setFont( new Font( "Century", Font.PLAIN, 20 ) );
+        g.drawString( forecast[ 0 ].shortForecast, 275,140 );
+        g.drawString( forecast[ 1 ].shortForecast, 275,310 );
+
+        g.setFont( new Font( "Century", Font.BOLD, 20 ) );
+        g.drawString( forecast[ 0 ].toString(), 275,110 );
+        g.drawString( forecast[ 1 ].toString(), 275,280 );
 
     }//paintForecastToday
 
     /*********************************************************
      *				   paintSevenDayForecast	    		 *
      *********************************************************/
-    public void paintSevenDayForecast( Graphics g )
+    public void paintSevenDayForecast( Graphics g ) throws IOException, MalformedURLException
     {
-        for( int i = 0; i < 14; i++ ) {
-            g.drawString( forecast[ i ].toString(), 200,( 20 + 25 * ( i + 1 )));
-            ImageIcon image = new ImageIcon( forecast[ i ].icon );
-            g.drawImage( image, 0, 0, this); // see javadoc for more info on the parameters
+        //Make sure 7 day forecast shows daytime temps
+        int i = -1;
+        if( forecast[ 0 ].isDayTime ) { i = 0; }
+        else { i = 1; }
+
+        //Draw each image
+        try
+        {
+            g.drawImage( ImageIO.read( new URL( forecast[ i ].icon ) ),25,95, 150, 150, null );
+            g.drawImage( ImageIO.read( new URL( forecast[ i + 2 ].icon ) ),200,55, 100, 100, null );
+            g.drawImage( ImageIO.read( new URL( forecast[ i + 4 ].icon ) ),325,55, 100, 100, null );
+            g.drawImage( ImageIO.read( new URL( forecast[ i + 6 ].icon ) ),450,55, 100, 100, null );
+            g.drawImage( ImageIO.read( new URL( forecast[ i + 8 ].icon ) ),200,220, 100, 100, null );
+            g.drawImage( ImageIO.read( new URL( forecast[ i + 10 ].icon ) ),325,220, 100, 100, null );
+            g.drawImage( ImageIO.read( new URL( forecast[ i + 12 ].icon ) ),450,220, 100, 100, null );
         }
+        catch ( MalformedURLException e ) {}
+        catch ( IOException e ) {}
+
+        g.setFont( new Font( "Century", Font.PLAIN, 13 ) );
+        g.drawString( forecast[ i ].shortForecast, 30,290);
+
+        g.setFont( new Font( "Century", Font.BOLD, 13 ) );
+        g.drawString( forecast[ i ].toString(), 30,270);
+
+        g.setFont( new Font( "Century", Font.BOLD, 11 ) );
+        g.drawString( forecast[ i + 2 ].toString(), 205,175);
+        g.drawString( forecast[ i + 4 ].toString(), 330,175);
+        g.drawString( forecast[ i + 6 ].toString(), 455,175);
+        g.drawString( forecast[ i + 8 ].toString(), 205,340);
+        g.drawString( forecast[ i + 10 ].toString(), 330,340);
+        g.drawString( forecast[ i + 12 ].toString(), 455,340);
+
+
+
     }//paintSevenDayForecast
 
     /*********************************************************
@@ -238,7 +287,7 @@ public class UserInterface extends JPanel
     static public void setUpFrame()
     {
         frame.setContentPane( mainPanel );
-        frame.setSize( 1280, 1024 );
+        frame.setSize( 1280, 900 );
         frame.setTitle( "Super Cool Weather App" );
         frame.getContentPane().setLayout( null );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
