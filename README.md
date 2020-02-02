@@ -52,3 +52,12 @@ Hoyahacks 2020. For our first time at a hackathon, we're both pretty pleased.
 
 * [@JanzCS](https://github.com/JanzCS)
 * [@Eab148](https://github.com/Eab148)
+
+## Acknowledgements
+I don't know how to do this right, but here's a list of the useful libraries and services we used:
+* [Google Cloud Geocoding API](https://developers.google.com/maps/documentation/geocoding/start)
+* [Java Swing Library](https://en.wikipedia.org/wiki/Swing_(Java))
+* [National Weather Service Forecast Data API](https://www.weather.gov/documentation/services-web-api)
+* [Unirest Java HTTP Client Library](http://kong.github.io/unirest-java/)
+
+We'd also like to acknowledge our parents and stuff. Thanks, y'all.
