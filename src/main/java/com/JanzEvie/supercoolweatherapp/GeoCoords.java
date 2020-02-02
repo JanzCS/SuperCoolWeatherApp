@@ -22,6 +22,10 @@ public class GeoCoords {
         if (responseJson.getJSONArray("results").length() == 0) {
             throw new RuntimeException("Address not found or invalid.");
         }
+        if (responseJson.getJSONArray("address_components").getJSONObject(3).getString("short_name")
+                != "US") {
+            throw new IllegalArgumentException("Entered location not in the United States.\nTry again, commie.");
+        }
         JSONObject coordsJson = responseJson.getJSONArray("results").getJSONObject(0).
                 getJSONObject("geometry").getJSONObject("location");
         lat = coordsJson.getFloat("lat");
