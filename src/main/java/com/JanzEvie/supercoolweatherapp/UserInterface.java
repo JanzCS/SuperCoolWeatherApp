@@ -68,7 +68,9 @@ public class UserInterface extends JPanel
     {
         //"Current Temp" button
         currentTemp.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed( ActionEvent e ) {
+                forecast = NwsParser.getSevenDayForecast(location);
+                now = NwsParser.getCurrentWeather(location);
                 showCurrentTemp = true;
                 showForecastToday = false;
                 showSevenDayForecast = false;
@@ -106,6 +108,8 @@ public class UserInterface extends JPanel
         address.addFocusListener( new FocusListener() {
             public void focusGained( FocusEvent e )
             {
+                //address = null;
+                location = null;
                 address.setBackground( Color.WHITE );
             }
 
@@ -127,7 +131,7 @@ public class UserInterface extends JPanel
         //Obtain a valid address from the user
         while( !valid )
         {
-            valid = false;
+            //valid = false;
 
             try {
                 location = address.getText();
@@ -140,6 +144,8 @@ public class UserInterface extends JPanel
             catch ( RuntimeException e ) {
                 address.setBackground( new Color( 255, 204, 204) );
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error Message", JOptionPane.INFORMATION_MESSAGE );
+                location = null;
+                displayPanel.repaint();
             }
 
             valid = true;
@@ -158,9 +164,9 @@ public class UserInterface extends JPanel
         super.paint( g );
 
         //Display desired weather information on display panel
-        if (showCurrentTemp && location != null) { paintCurrentTemp(g); }
-        else if (showForecastToday) { paintForecastToday(g); }
-        else if (showSevenDayForecast) {
+        if (showCurrentTemp && location != null ) { paintCurrentTemp(g); }
+        else if (showForecastToday && location != null) { paintForecastToday(g); }
+        else if (showSevenDayForecast && location != null) {
             try { paintSevenDayForecast(g); }
             catch (IOException e) {}
         }
