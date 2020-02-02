@@ -69,8 +69,6 @@ public class UserInterface extends JPanel
         //"Current Temp" button
         currentTemp.addActionListener(new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
-                forecast = NwsParser.getSevenDayForecast(location);
-                now = NwsParser.getCurrentWeather(location);
                 showCurrentTemp = true;
                 showForecastToday = false;
                 showSevenDayForecast = false;
